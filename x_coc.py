@@ -6,32 +6,32 @@ def process_clusters(clusters):
     results = []
     
     for cluster in clusters:
-        results.append(calculate_center_of_charge_y(cluster))
+        results.append(calculate_center_of_charge_x(cluster))
         
     return results
 
-def calculate_center_of_charge_y(raw_data):
+def calculate_center_of_charge_x(raw_data):
     # Calculate center of charge for each x value
     grouped_data = {}
-    y_errors = 1/math.sqrt(12)
+    x_errors = 1/math.sqrt(12)
     for x, y, charge in raw_data:
-        if x not in grouped_data:
-            grouped_data[x] = {"sum_y_charge": 0, "sum_charge": 0, "y_errors": y_errors}
+        if y not in grouped_data:
+            grouped_data[y] = {"sum_x_charge": 0, "sum_charge": 0, "x_errors": x_errors}
     
         #error_y += math.sqrt(12) * charge 
-        grouped_data[x]["sum_y_charge"] += y * charge
+        grouped_data[y]["sum_x_charge"] += x * charge
         #grouped_data[x]["y_errors"] += y_errors
-        grouped_data[x]["sum_charge"] += charge
+        grouped_data[y]["sum_charge"] += charge
         
 
-    result_with_charge = [(x, values["sum_y_charge"]/values["sum_charge"], values["sum_charge"], values["y_errors"]) for x, values in grouped_data.items()]
+    result_with_charge = [(y, values["sum_x_charge"]/values["sum_charge"], values["sum_charge"], values["x_errors"]) for y, values in grouped_data.items()]
     #result_with_charge.append(1/math.sqrt(12)*charge)
     #print(result_with_charge)
     return result_with_charge
 
 # we will also normalize the charge here, i.e. take each charged pixel and divide it by the total charge
 
-def process_clusters_normalized_y(clusters):
+def process_clusters_normalized(clusters):
 # This function will return a list of "center of charge" results for each cluster
 # with normalized charges.
     results = []
@@ -46,7 +46,7 @@ def process_clusters_normalized_y(clusters):
         #print(normalized_cluster)
         
         # Calculate center of charge for the normalized cluster
-        coc_result = calculate_center_of_charge(normalized_cluster)
+        coc_result = calculate_center_of_charge_x(normalized_cluster)
         results.append(coc_result)
         
     return results
