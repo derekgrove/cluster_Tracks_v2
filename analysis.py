@@ -1,7 +1,6 @@
 import parse_data as parse
 from plotter import *
-from x_coc import * 
-from y_coc import * 
+from coc import * 
 from fitting_v2 import *
 from truth_values import *
 
@@ -10,18 +9,20 @@ def main():
     filename = 'raw_data.txt'
     truths, clusters = parse.parse_data(filename)
 
-    # Calculate center of charge for each cluster
-    #all_results = process_clusters(clusters)
-    #all_results = process_bulk_clusters_normalized(clusters)
-    all_results = process_clusters_normalized(clusters)
-    all_results_2 = process_bulk_clusters_normalized
-    beta_values = []
-    #print(all_results)
-    
     min_cluster = int(input("Enter the starting cluster index: "))
     max_cluster = int(input("Enter the ending cluster index: "))
     make_plots = input("Make plots? (yes, no): ").lower() == "yes"
     make_hist = input("Make histogram of beta differences? (yes, no): ").lower() == "yes"
+    x_or_y = input("x or y center of charge calculation? (y or x): ")
+    # Calculate center of charge for each cluster
+    #all_results = process_clusters(clusters)
+    #all_results = process_bulk_clusters_normalized(clusters)
+    all_results = process_clusters_normalized(clusters, x_or_y)
+    #all_results_2 = process_bulk_clusters_normalized
+    beta_values = []
+    #print(all_results)
+    
+    
     #implement below
 
     if min_cluster < 0 or max_cluster >= len(all_results):
@@ -33,9 +34,9 @@ def main():
         # We're assuming here that plot_weighted_data expects a list of tuples, adjust as necessary.
         #plot_weighted_data(all_results[i], i)
         #print(all_results[i])
-        m, weights, x, y, x_errors, calculated_beta = iminuit_chi2(all_results[i])
+        m, weights, x, y, errors, calculated_beta = iminuit_chi2(all_results[i])
         if make_plots:
-            plot_imin_obj(m, weights, x, y, x_errors, calculated_beta)
+            plot_imin_obj(m, weights, x, y, errors, calculated_beta, i, x_or_y)
         #plot_weighted_data_with_fit(all_results_2[i], i, m)
         true_beta = calculate_true_beta(truths[i])
         beta_values.append((calculated_beta, true_beta))

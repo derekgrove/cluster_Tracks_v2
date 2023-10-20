@@ -32,7 +32,7 @@ def iminuit_chi2(result_with_charge):
     beta_angle = angle_from_slope(m.values['a'])
     return m, weights, x, y, y_errors, beta_angle
 
-def plot_imin_obj(m, weights, x, y, y_errors, beta_angle):
+def plot_imin_obj(m, weights, x, y, errors, beta_angle, i, x_or_y):
     # Plotting
     plt.scatter(x, y, c='blue', marker='o', label='Data points', s=weights*100)  # scaling down the point size for clarity
     x_fit = np.linspace(min(x), max(x), 400)
@@ -43,7 +43,7 @@ def plot_imin_obj(m, weights, x, y, y_errors, beta_angle):
     plt.xlim(min(x)-1, max(x)+1)
     plt.ylim(min(y)-1, max(y)+1)
     plt.plot(x_fit, y_fit, 'r-', label=f'Fit: y = ({m.values["a"]:.2f} +- {m.errors["a"]:.2f}) x + ({m.values["b"]:.2f}+- {m.errors["b"]:.2f})')
-    plt.errorbar(x, y, yerr=y_errors, fmt='o', markersize=5, alpha=0.6, ecolor='red', capsize=3)
+    plt.errorbar(x, y, yerr=errors, fmt='o', markersize=5, alpha=0.6, ecolor='red', capsize=3)
     #print(y_errors)
     #print(1/(math.sqrt(12)))
     
@@ -63,7 +63,7 @@ def plot_imin_obj(m, weights, x, y, y_errors, beta_angle):
     plt.xlabel('X')
     plt.ylabel('Y')
     plt.legend()
-    plt.title('Weighted Linear Fit')
+    plt.title('Weighted Linear Fit Cluster ' + str(i))
     plt.grid(True)
     plt.show()
 
