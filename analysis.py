@@ -15,31 +15,48 @@ def main():
     make_hist = input("Make histogram of beta differences? (yes, no): ").lower() == "yes"
     x_or_y = input("x or y center of charge calculation? (y or x): ")
     # Calculate center of charge for each cluster
-    #all_results = process_clusters(clusters)
-    #all_results = process_bulk_clusters_normalized(clusters)
-    all_results = process_clusters_normalized(clusters, x_or_y)
+    #all_results_bulk = process_clusters(clusters)
+    #all_results = process_bulk_clusters_normalized(clusters, x_or_y)
+    #x_center, y_center, total_charge = cluster_center(clusters)
+    #all_results = process_clusters_normalized(clusters, x_or_y)
+    
+
     #all_results_2 = process_bulk_clusters_normalized
     beta_values = []
     #print(all_results)
-    
+    #charge for _, _, charge in cluster
     
     #implement below
 
-    if min_cluster < 0 or max_cluster >= len(all_results):
+    if min_cluster < 0 or max_cluster >= len(clusters):
         print("Error: Invalid cluster range. Please make sure the min and max are within the range of clusters.")
         return
 
     for i in range(min_cluster, max_cluster + 1):
         print(f"Plotting with fit for cluster {i}")
         # We're assuming here that plot_weighted_data expects a list of tuples, adjust as necessary.
-        #plot_weighted_data(all_results[i], i)
+        #plot_weighted_data(all_results_bulk[i], i)
         #print(all_results[i])
-        m, weights, x, y, errors, calculated_beta = iminuit_chi2(all_results[i])
-        if make_plots:
-            plot_imin_obj(m, weights, x, y, errors, calculated_beta, i, x_or_y)
-        #plot_weighted_data_with_fit(all_results_2[i], i, m)
+        x_center, y_center, total_charge = cluster_center(clusters[i])
+        coc_result = process_cluster_normalized(clusters[i], x_or_y)
+        adjusted_cluster = [(x - x_center, y - y_center, charge, error) for x, y, charge, error in coc_result]
+        print("x_center: " + str(x_center))
+        print("y_center: " + str(y_center))
+        #m, weights, x, y, errors, calculated_beta = iminuit_chi2(coc_result, x_or_y)
+        m, weights, x, y, errors, calculated_beta = iminuit_chi2(adjusted_cluster, x_or_y)
         true_beta = calculate_true_beta(truths[i])
+        print("true beta: " + str(true_beta))
+        #true_beta_line = calculate_line_points(x_center, y_center, true_beta)
+        #print(true_beta_line)
+
         beta_values.append((calculated_beta, true_beta))
+        if make_plots:
+            if x_or_y == "y":
+                plot_imin_obj_y(m, weights, x, y, errors, calculated_beta, true_beta, i)
+            if x_or_y == "x":
+                plot_imin_obj_x(m, weights, x, y, errors, calculated_beta, true_beta, i)
+        #plot_weighted_data_with_fit(all_results_2[i], i, m)
+        
         
     
     differences = [true - calculated for calculated, true in beta_values]
@@ -47,6 +64,9 @@ def main():
         plot_histogram(differences, 'Difference (beta_true - beta_calculated)', '(beta_true - beta_calculated)')
         plot_histogram([item[0] for item in beta_values], 'Calculated Betas from minuit', 'Beta (degrees)')
         plot_histogram([item[1] for item in beta_values], 'Truth Betas from allpix', 'Beta (degrees)')
+        
+    #print(beta_values)
+    #normal_plot(beta_values, "true beta vs calculated beta (x center of charge)", "calculated beta (degrees)", "true beta (degrees)")
 
         
 

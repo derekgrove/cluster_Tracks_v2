@@ -17,7 +17,7 @@ def fit_and_plot(result_with_charge):
     # Chi-squared function
     def chi2(a, b):
         y_model = line(x, a, b)
-        chi = (y - y_model) ** 2 / y_errors**2
+        chi = (y - y_model) ** 2 / y_errors ** 2
         return np.sum(chi)
 
     # Minimize chi-squared

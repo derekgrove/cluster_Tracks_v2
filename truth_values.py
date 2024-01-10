@@ -20,6 +20,8 @@ def calculate_true_beta(truth):
 
     return beta_deg
 
+#calculate slope and intercept from generator data
+
 def calculate_true_cluster_position(truth):
     cluster_position_x = truth[1]
     cluster_position_y = truth[2]

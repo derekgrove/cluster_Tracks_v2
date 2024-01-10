@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 def plot_weighted_data(clusters, i):
     # Split clusters into x, y and weights (charges)
@@ -61,3 +62,32 @@ def plot_histogram(beta_values, title, x_axis):
     plt.title(title)
     plt.grid(True)
     plt.show()
+
+def normal_plot(data_list, title, x_axis, y_axis):
+
+    x, y = zip(*data_list)
+
+    # Create the plot
+    plt.scatter(x, y)
+
+    # Set the title and labels for the axes
+    plt.title(title)
+    plt.xlabel(x_axis)
+    plt.ylabel(y_axis)
+
+    # Show the plot
+    plt.show()
+
+def calculate_line_points(x_center, y_center, true_beta, length=10):
+
+    true_beta_rad = np.deg2rad(true_beta)
+
+    dx = length * np.cos(true_beta_rad)
+    dy = length * np.sin(true_beta_rad)
+
+    point1 = (x_center - dx, y_center - dy)
+    point2 = (x_center + dx, y_center + dy)
+
+    return point1, point2
+
+#add pixel plot somewhere here
