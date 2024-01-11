@@ -13,12 +13,9 @@ def main():
     max_cluster = int(input("Enter the ending cluster index: "))
     make_plots = input("Make plots? (yes, no): ").lower() == "yes"
     make_hist = input("Make histogram of beta differences? (yes, no): ").lower() == "yes"
-    x_or_y = input("x or y center of charge calculation? (y or x): ")
     # Calculate center of charge for each cluster
     #all_results_bulk = process_clusters(clusters)
-    #all_results = process_bulk_clusters_normalized(clusters, x_or_y)
     #x_center, y_center, total_charge = cluster_center(clusters)
-    #all_results = process_clusters_normalized(clusters, x_or_y)
     
 
     #all_results_2 = process_bulk_clusters_normalized
@@ -38,12 +35,11 @@ def main():
         #plot_weighted_data(all_results_bulk[i], i)
         #print(all_results[i])
         x_center, y_center, total_charge = cluster_center(clusters[i])
-        coc_result = process_cluster_normalized(clusters[i], x_or_y)
+        coc_result = process_cluster_normalized(clusters[i])
         adjusted_cluster = [(x - x_center, y - y_center, charge, error) for x, y, charge, error in coc_result]
         print("x_center: " + str(x_center))
         print("y_center: " + str(y_center))
-        #m, weights, x, y, errors, calculated_beta = iminuit_chi2(coc_result, x_or_y)
-        m, weights, x, y, errors, calculated_beta = iminuit_chi2(adjusted_cluster, x_or_y)
+        m, weights, x, y, errors, calculated_beta = iminuit_chi2(adjusted_cluster)
         true_beta = calculate_true_beta(truths[i])
         print("true beta: " + str(true_beta))
         #true_beta_line = calculate_line_points(x_center, y_center, true_beta)
@@ -51,10 +47,7 @@ def main():
 
         beta_values.append((calculated_beta, true_beta))
         if make_plots:
-            if x_or_y == "y":
-                plot_imin_obj_y(m, weights, x, y, errors, calculated_beta, true_beta, i)
-            if x_or_y == "x":
-                plot_imin_obj_x(m, weights, x, y, errors, calculated_beta, true_beta, i)
+            plot_imin_obj(m, weights, x, y, errors, calculated_beta, true_beta, i)
         #plot_weighted_data_with_fit(all_results_2[i], i, m)
         
         
