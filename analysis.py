@@ -1,7 +1,9 @@
 import parse_data as parse
 from plotter import *
 from coc import * 
+from coc_x import *
 from fitting_v2 import *
+from fitting_v2_x import *
 from truth_values import *
 
 
@@ -13,6 +15,7 @@ def main():
     max_cluster = int(input("Enter the ending cluster index: "))
     make_plots = input("Make plots? (yes, no): ").lower() == "yes"
     make_hist = input("Make histogram of beta differences? (yes, no): ").lower() == "yes"
+    x_or_y = input("for x? (yes/no)")
     # Calculate center of charge for each cluster
     #all_results_bulk = process_clusters(clusters)
     #x_center, y_center, total_charge = cluster_center(clusters)
@@ -35,11 +38,25 @@ def main():
         #plot_weighted_data(all_results_bulk[i], i)
         #print(all_results[i])
         x_center, y_center, total_charge = cluster_center(clusters[i])
-        coc_result = process_cluster_normalized(clusters[i])
-        adjusted_cluster = [(x - x_center, y - y_center, charge, error) for x, y, charge, error in coc_result]
+        #print("x_center:")
+        #print(x_center)
+        #print("y_center:")
+        #print(y_center)
+        if x_or_y == "yes":
+            coc_result_x = process_cluster_normalized_x(clusters[i])
+            #print("coc_result")
+            #print(coc_result_x)
+            adjusted_cluster_x = [(y - y_center, x - x_center, charge, error) for y, x, charge, error in coc_result_x]
+            #print("adjusted_cluster_x:")
+            #print(adjusted_cluster_x)
+            #m, weights, x, y, errors, calculated_beta = iminuit_chi2_x(coc_result_x)
+            m, weights, x, y, errors, calculated_beta = iminuit_chi2_x(adjusted_cluster_x)
+        else:
+            coc_result = process_cluster_normalized(clusters[i])
+            adjusted_cluster = [(x - x_center, y - y_center, charge, error) for x, y, charge, error in coc_result]
+            m, weights, x, y, errors, calculated_beta = iminuit_chi2(adjusted_cluster)
         print("x_center: " + str(x_center))
         print("y_center: " + str(y_center))
-        m, weights, x, y, errors, calculated_beta = iminuit_chi2(adjusted_cluster)
         true_beta = calculate_true_beta(truths[i])
         print("true beta: " + str(true_beta))
         #true_beta_line = calculate_line_points(x_center, y_center, true_beta)
@@ -47,7 +64,11 @@ def main():
 
         beta_values.append((calculated_beta, true_beta))
         if make_plots:
-            plot_imin_obj(m, weights, x, y, errors, calculated_beta, true_beta, i)
+            if x_or_y == "yes":
+                plot_imin_obj_x(m, weights, x, y, errors, calculated_beta, true_beta, i)
+
+            else:   
+                plot_imin_obj(m, weights, x, y, errors, calculated_beta, true_beta, i)
         #plot_weighted_data_with_fit(all_results_2[i], i, m)
         
         

@@ -6,9 +6,6 @@ import matplotlib.pyplot as plt
 def line(x, a, b):
     return a * x + b
 
-def x_line(y, c, d):
-    return c * y + d
-
 
 def iminuit_chi2(result_with_charge):
     # Extracting data from result_with_charge
@@ -37,6 +34,8 @@ def iminuit_chi2(result_with_charge):
     m.errors['b'] = 0.1
     m.migrad()  # run the minimizer
     beta_angle = angle_from_slope(m.values['a'])
+    print("m.values['a']:")
+    print(m.values['a'])
     return m, weights, x, y, errors, beta_angle
     
 def plot_imin_obj(m, weights, x, y, errors, calc_beta, true_beta, i):
