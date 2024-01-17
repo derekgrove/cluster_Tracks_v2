@@ -142,12 +142,12 @@ def iminuit_chi2_x(result_with_charge):
 def plot_imin_obj_x(m, weights, x, y, errors, calc_beta, true_beta, i):
     # Plotting
     plt.scatter(x, y, c='blue', marker='o', label='Data points', s=weights*100)  # scaling down the point size for clarity
-    y_fit = np.linspace(min(y), max(y), 400)
+    x_fit = np.linspace(min(y), max(y), 400)
     #print("yfit:")
     #print(y_fit)
-    x_fit = x_line(y_fit, m.values['c'], m.values['d'])
-    #print("xfit:")
-    #print(x_fit)
+    y_fit = x_line(x_fit, m.values['c'], m.values['d'])
+    print("xfit:")
+    print(x_fit)
     dof = len(x) - 2  # degrees of freedom = number of data points - number of fitted parameters
     reduced_chi2 = m.fval / dof
     print('reduced chi square:', reduced_chi2)
@@ -197,5 +197,5 @@ def plot_imin_obj_x(m, weights, x, y, errors, calc_beta, true_beta, i):
 #include these functions to get beta angle (angle of major axis) from the calculated slope:
 def angle_from_slope_x(m):
     angle_rad = math.atan(m)
-    angle_deg = math.degrees(angle_rad)
+    angle_deg = math.degrees(angle_rad) + 90
     return angle_deg
